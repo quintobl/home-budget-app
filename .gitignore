@@ -39,3 +39,5 @@ Thumbs.db
 obj
 bin
 budget.db
+budget.db-shm
+budget.db-wal
