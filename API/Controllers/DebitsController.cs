@@ -1,6 +1,7 @@
 using API.Data;
 using API.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace API;
 
@@ -9,17 +10,17 @@ namespace API;
 public class DebitsController(DataContext context) : ControllerBase
 {
     [HttpGet]
-    public ActionResult<IEnumerable<Debit>> GetDebits()
+    public async Task<ActionResult<IEnumerable<Debit>>> GetDebits()
     {
-        var debits = context.Debits.ToList();
+        var debits = await context.Debits.ToListAsync();
 
         return debits;
     }
 
     [HttpGet("{id:int}")]
-    public ActionResult<Debit> GetDebit(int id)
+    public async Task<ActionResult<Debit>> GetDebit(int id)
     {
-        var debit = context.Debits.Find(id);
+        var debit = await context.Debits.FindAsync(id);
 
         if (debit == null)
         {
