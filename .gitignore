@@ -41,3 +41,17 @@ bin
 budget.db
 budget.db-shm
 budget.db-wal
+
+# Dependency directories
+node_modules/
+
+# Build output
+dist/
+
+# Local environment files
+.env
+
+# Angular specific
+.angular/cache/
+coverage/
+tmp/
