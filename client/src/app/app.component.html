@@ -1,1 +1,7 @@
 <h1>{{ title }}</h1>
+
+<ul>
+  <li *ngFor="let debit of debits">
+    {{ debit.id }}: {{ debit.description }}, {{ debit.amount }}
+  </li>
+</ul>
