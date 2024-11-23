@@ -5,9 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API;
 
-[ApiController]
-[Route("api/[controller]")]
-public class DebitsController(DataContext context) : ControllerBase
+public class DebitsController(DataContext context) : BaseApiController
 {
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Debit>>> GetDebits()

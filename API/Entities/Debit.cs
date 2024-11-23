@@ -8,5 +8,7 @@ namespace API.Entities
         public decimal Amount { get; set; }
         public DateTime Date { get; set; }
         public int? AccountId { get; set; }
+        public required byte[] PasswordHash { get; set; }
+        public required byte[] PasswordSalt { get; set; }
     }
 }
