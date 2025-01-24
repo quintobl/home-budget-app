@@ -50,6 +50,8 @@ dist/
 
 # Local environment files
 .env
+appsettings.json
+appsettings.Development.json
 
 # Angular specific
 .angular/cache/
