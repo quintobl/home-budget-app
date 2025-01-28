@@ -1,33 +1,35 @@
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
   <div class="container">
-    <a class="navbar-brand" href="#">Budget App</a>
+    <a class="navbar-brand" href="#">Dating App</a>
 
     <ul class="navbar-nav me-auto mb-2 mb-md-0">
       <li class="nav-item">
-        <a class="nav-link">Debits</a>
+        <a class="nav-link">Matches</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link">Credits</a>
+        <a class="nav-link">Lists</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link">Graphs-Charts</a>
+        <a class="nav-link">Messages</a>
       </li>
     </ul>
-    <form class="d-flex">
+    <form #loginForm="ngForm" (ngSubmit)="login()" class="d-flex">
       <input
         id="username"
         class="form-control me-2"
         name="username"
+        [(ngModel)]="model.username"
         placeholder="Username"
-        autocomplete="username"
+        autocomplete="off"
       />
       <input
         id="password"
         class="form-control me-2"
         name="password"
+        [(ngModel)]="model.password"
         placeholder="Password"
         type="password"
-        autocomplete="current-password"
+        autocomplete="off"
       />
       <button class="btn btn-outline-success" type="submit">Login</button>
     </form>
