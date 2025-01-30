@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-primary">
   <div class="container">
     <a routerLink="/" routerLinkActive="active" class="navbar-brand"
       >Budget App</a
@@ -41,7 +41,7 @@
     @if (accountService.currentUser()) {
     <div class="dropdown" dropdown>
       <a dropdownToggle class="dropdown-toggle text-light text-decoration-none"
-        >Welcome, User</a
+        >Welcome, {{ accountService.currentUser()?.username | titlecase }}</a
       >
       <div *dropdownMenu class="dropdown-menu">
         <a class="dropdown-item">Edit Profile</a>
@@ -74,7 +74,7 @@
         type="password"
         autocomplete="off"
       />
-      <button class="btn btn-outline-success" type="submit">Login</button>
+      <button class="btn btn-secondary" type="submit">Login</button>
     </form>
   </div>
 </nav>
