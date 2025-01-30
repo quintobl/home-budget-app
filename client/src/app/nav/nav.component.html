@@ -9,6 +9,14 @@
       *ngIf="accountService.currentUser()"
     >
       <li class="nav-item">
+        <a
+          routerLink="/data-current-month"
+          routerLinkActive="active"
+          class="nav-link"
+          >Data For Current Month</a
+        >
+      </li>
+      <li class="nav-item">
         <a routerLink="/debits" routerLinkActive="active" class="nav-link"
           >Debits</a
         >
