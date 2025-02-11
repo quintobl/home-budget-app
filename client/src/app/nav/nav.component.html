@@ -1,41 +1,32 @@
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-primary">
   <div class="container">
-    <a routerLink="/" routerLinkActive="active" class="navbar-brand"
-      >Budget App</a
+    <a class="navbar-brand" routerLinkActive="active" routerLink="/"
+      >Dating App</a
     >
 
-    <ul
-      class="navbar-nav me-auto mb-2 mb-md-0"
-      *ngIf="accountService.currentUser()"
-    >
+    <ul class="navbar-nav me-auto mb-2 mb-md-0">
       @if (accountService.currentUser()) {
       <li class="nav-item">
-        <a
-          routerLink="/data-current-month"
-          routerLinkActive="active"
-          class="nav-link"
-          >Data For Current Month</a
+        <a routerLink="/members" routerLinkActive="active" class="nav-link"
+          >Matches</a
         >
       </li>
       <li class="nav-item">
-        <a routerLink="/debits" routerLinkActive="active" class="nav-link"
-          >Debits</a
+        <a routerLink="/lists" routerLinkActive="active" class="nav-link"
+          >Lists</a
         >
       </li>
       <li class="nav-item">
-        <a routerLink="/credits" routerLinkActive="active" class="nav-link"
-          >Credits</a
-        >
-      </li>
-      <li class="nav-item">
-        <a
-          routerLink="/graphs-charts"
-          routerLinkActive="active"
-          class="nav-link"
-          >Graphs-Charts</a
+        <a routerLink="/messages" routerLinkActive="active" class="nav-link"
+          >Messages</a
         >
       </li>
       }
+      <li class="nav-item">
+        <a routerLink="/errors" routerLinkActive="active" class="nav-link"
+          >Errors</a
+        >
+      </li>
     </ul>
 
     @if (accountService.currentUser()) {
@@ -74,7 +65,7 @@
         type="password"
         autocomplete="off"
       />
-      <button class="btn btn-secondary" type="submit">Login</button>
+      <button class="btn btn-success" type="submit">Login</button>
     </form>
   </div>
 </nav>
