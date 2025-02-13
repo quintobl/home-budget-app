@@ -57,3 +57,11 @@ appsettings.Development.json
 .angular/cache/
 coverage/
 tmp/
+
+# Other files
+UserSeedData.json
+Seed.cs
+commit-notes.md
+
+# Ignore EF Core migrations
+Migrations/
