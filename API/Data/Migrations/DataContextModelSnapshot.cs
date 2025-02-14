@@ -19,7 +19,7 @@ namespace API.Data.Migrations
 
             modelBuilder.Entity("API.Entities.Account", b =>
                 {
-                    b.Property<int>("AccountId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
@@ -29,7 +29,7 @@ namespace API.Data.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("AccountId");
+                    b.HasKey("Id");
 
                     b.ToTable("Accounts");
                 });
@@ -72,7 +72,11 @@ namespace API.Data.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Category")
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("CategoryName")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("Date")
@@ -83,29 +87,98 @@ namespace API.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AccountId");
+
+                    b.HasIndex("CategoryId");
+
                     b.ToTable("Debits");
                 });
 
             modelBuilder.Entity("AccountAppUser", b =>
                 {
-                    b.Property<int>("AccountsAccountId")
+                    b.Property<int>("AccountsId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("UsersId")
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("AccountsAccountId", "UsersId");
+                    b.HasKey("AccountsId", "UsersId");
 
                     b.HasIndex("UsersId");
 
                     b.ToTable("AccountAppUser");
                 });
 
+            modelBuilder.Entity("Category", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("Credit", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("AccountId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("CategoryName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("Credits");
+                });
+
+            modelBuilder.Entity("API.Entities.Debit", b =>
+                {
+                    b.HasOne("API.Entities.Account", "Account")
+                        .WithMany("Debits")
+                        .HasForeignKey("AccountId");
+
+                    b.HasOne("Category", "Category")
+                        .WithMany("Debits")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
+
+                    b.Navigation("Category");
+                });
+
             modelBuilder.Entity("AccountAppUser", b =>
                 {
                     b.HasOne("API.Entities.Account", null)
                         .WithMany()
-                        .HasForeignKey("AccountsAccountId")
+                        .HasForeignKey("AccountsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -114,6 +187,39 @@ namespace API.Data.Migrations
                         .HasForeignKey("UsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Credit", b =>
+                {
+                    b.HasOne("API.Entities.Account", "Account")
+                        .WithMany("Credits")
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Category", "Category")
+                        .WithMany("Credits")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("API.Entities.Account", b =>
+                {
+                    b.Navigation("Credits");
+
+                    b.Navigation("Debits");
+                });
+
+            modelBuilder.Entity("Category", b =>
+                {
+                    b.Navigation("Credits");
+
+                    b.Navigation("Debits");
                 });
 #pragma warning restore 612, 618
         }

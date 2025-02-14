@@ -10,4 +10,8 @@ public class DataContext(DbContextOptions options) : DbContext(options)
     public DbSet<AppUser> Users { get; set; }
 
     public DbSet<Account> Accounts { get; set; }
+
+    public DbSet<Credit> Credits { get; set; }
+
+    public DbSet<Category> Categories { get; set; }
 }

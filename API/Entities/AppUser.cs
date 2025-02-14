@@ -10,6 +10,7 @@ public class AppUser
     public byte[] PasswordHash { get; set; } = [];
     public byte[] PasswordSalt { get; set; } = [];
     public DateTime Created { get; set; } = DateTime.UtcNow;
+
+    // Many-to-Many: A user can have multiple accounts
     public List<Account> Accounts { get; set; } = [];
-    //public List<UserAccount> UserAccounts { get; set; } = [];
 }
