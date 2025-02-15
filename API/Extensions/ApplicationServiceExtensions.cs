@@ -1,5 +1,6 @@
 using API.Data;
 using API.interfaces;
+using API.Interfaces;
 using Microsoft.EntityFrameworkCore;
 namespace API.Extensions;
 
@@ -15,6 +16,11 @@ public static class ApplicationServiceExtensions
         services.AddCors();
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IAccountRepository, AccountRepository>();
+        services.AddScoped<ICreditRepository, CreditRepository>();
+        services.AddScoped<IDebitRepository, DebitRepository>();
+
+        services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
         return services;
     }

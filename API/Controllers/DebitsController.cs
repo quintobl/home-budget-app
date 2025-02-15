@@ -1,29 +1,25 @@
-using API.Data;
-using API.Entities;
+using API.DTOs;
+using API.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers;
 
-public class DebitsController(DataContext context) : BaseApiController
+[Authorize]
+public class DebitsController(IDebitRepository debitRepository) : BaseApiController
 {
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Debit>>> GetDebits()
+    public async Task<ActionResult<IEnumerable<DebitDto>>> GetDebits()
     {
-        var debits = await context.Debits.ToListAsync();
-
-        return debits;
+        var debits = await debitRepository.GetDebitsAsync();
+        return Ok(debits);
     }
 
-    [HttpGet("{id:int}")]
-    public async Task<ActionResult<Debit>> GetDebit(int id)
+    [HttpGet("{id}")]
+    public async Task<ActionResult<DebitDto>> GetDebit(int id)
     {
-        var debit = await context.Debits.FindAsync(id);
-
-        if (debit == null)
-        {
-            return NotFound();
-        }
+        var debit = await debitRepository.GetDebitByIdAsync(id);
+        if (debit == null) return NotFound();
         return debit;
     }
 }
