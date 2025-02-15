@@ -22,4 +22,23 @@ public class CreditsController(ICreditRepository creditRepository) : BaseApiCont
         if (credit == null) return NotFound();
         return credit;
     }
+
+    [HttpGet("by-date")]
+    public async Task<ActionResult<IEnumerable<CreditDto>>> GetCreditsByDate()
+    {
+        var credits = await creditRepository.GetCreditsByDateAsync();
+        return Ok(credits);
+    }
+
+    [HttpGet("by-date-range")]
+    public async Task<ActionResult<IEnumerable<CreditDto>>> GetCreditsByDateRange([FromQuery] DateTime startDate, [FromQuery] DateTime endDate)
+    {
+        if (startDate > endDate)
+        {
+            return BadRequest("Start date cannot be after end date.");
+        }
+
+        var credits = await creditRepository.GetCreditsByDateRangeAsync(startDate, endDate);
+        return Ok(credits);
+    }
 }

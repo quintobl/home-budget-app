@@ -23,4 +23,21 @@ public class CreditRepository(DataContext context, IMapper mapper) : ICreditRepo
             .ProjectTo<CreditDto>(mapper.ConfigurationProvider)
             .SingleOrDefaultAsync();
     }
+
+    public async Task<IEnumerable<CreditDto>> GetCreditsByDateAsync()
+    {
+        return await context.Credits
+            .OrderByDescending(c => c.Date)
+            .ProjectTo<CreditDto>(mapper.ConfigurationProvider)
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<CreditDto>> GetCreditsByDateRangeAsync(DateTime startDate, DateTime endDate)
+    {
+        return await context.Credits
+            .Where(c => c.Date >= startDate && c.Date <= endDate)
+            .OrderByDescending(c => c.Date)
+            .ProjectTo<CreditDto>(mapper.ConfigurationProvider)
+            .ToListAsync();
+    }
 }
