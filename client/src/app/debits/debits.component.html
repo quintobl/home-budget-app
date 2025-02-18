@@ -1,1 +1,98 @@
-<p>debits works!</p>
+<div class="container mt-4">
+  <h3>Enter Debit</h3>
+  <form>
+    <div class="mb-3">
+      <label for="category" class="form-label">Category</label>
+      <select
+        class="form-select w-25"
+        id="category"
+        [ngModelOptions]="{ standalone: true }"
+        [(ngModel)]="selectedCategory"
+      >
+        <option *ngFor="let category of categories" [value]="category.id">
+          {{ category.name }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Custom Category Input (if user wants to enter a custom category) -->
+    <div class="mb-3">
+      <label for="customCategory" class="form-label"
+        >Or Enter Custom Category</label
+      >
+      <input
+        type="text"
+        class="form-control w-25"
+        id="customCategory"
+        [ngModelOptions]="{ standalone: true }"
+        [(ngModel)]="customCategory"
+        placeholder="Enter category"
+      />
+    </div>
+
+    <!-- Description Dropdown (Array of Predefined Descriptions) -->
+    <div class="mb-3">
+      <label for="description" class="form-label">Description</label>
+      <select
+        class="form-select w-25"
+        id="description"
+        [ngModelOptions]="{ standalone: true }"
+        [(ngModel)]="selectedDescription"
+      >
+        <option value="" disabled selected>Select a description</option>
+        <option
+          *ngFor="let description of descriptionArray"
+          [value]="description"
+        >
+          {{ description }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Custom Description Input (if user wants to enter a custom one) -->
+    <div class="mb-3">
+      <label for="customDescription" class="form-label"
+        >Or Enter Custom Description</label
+      >
+      <input
+        type="text"
+        class="form-control w-25"
+        id="customDescription"
+        [ngModelOptions]="{ standalone: true }"
+        [(ngModel)]="customDescription"
+        placeholder="Enter description"
+      />
+    </div>
+
+    <!-- Amount Input -->
+    <div class="mb-3">
+      <label for="amount" class="form-label">Amount</label>
+      <input
+        type="number"
+        class="form-control w-25"
+        id="amount"
+        [ngModelOptions]="{ standalone: true }"
+        [(ngModel)]="amount"
+        placeholder="Enter amount"
+        required
+      />
+    </div>
+
+    <!-- Datepicker Input -->
+    <div class="mb-3">
+      <label for="date" class="form-label">Date</label>
+      <input
+        type="date"
+        class="form-control w-25"
+        id="date"
+        [ngModelOptions]="{ standalone: true }"
+        [(ngModel)]="date"
+        required
+      />
+    </div>
+
+    <div class="mb-3">
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+  </form>
+</div>

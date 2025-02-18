@@ -11,7 +11,7 @@ public class Debit
     public DateTime Date { get; set; }
 
     // Foreign Key - Account Relationship (Many-to-One)
-    public int? AccountId { get; set; }
+    public int AccountId { get; set; }
     public Account Account { get; set; }
 
     // Foreign Key - Category Relationship (Many-to-One)

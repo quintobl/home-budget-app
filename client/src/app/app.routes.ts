@@ -16,10 +16,10 @@ export const routes: Routes = [
     runGuardsAndResolvers: 'always',
     canActivate: [authGuard],
     children: [
+      { path: 'data-current-month', component: DataCurrentMonthComponent },
       { path: 'debits', component: DebitsComponent },
       { path: 'credits', component: CreditsComponent },
       { path: 'graphs-charts', component: GraphsChartsComponent },
-      { path: 'data-current-month', component: DataCurrentMonthComponent },
     ],
   },
   { path: 'errors', component: TestErrorsComponent },
