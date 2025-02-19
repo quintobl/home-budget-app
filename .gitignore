@@ -41,6 +41,7 @@ bin
 budget.db
 budget.db-shm
 budget.db-wal
+HomeBudgetDB.db
 
 # Dependency directories
 node_modules/
@@ -50,8 +51,6 @@ dist/
 
 # Local environment files
 .env
-appsettings.json
-appsettings.Development.json
 
 # Angular specific
 .angular/cache/
@@ -62,6 +61,8 @@ tmp/
 UserSeedData.json
 Seed.cs
 commit-notes.md
+appsettings.json
+appsettings.Development.json
 
 # Ignore EF Core migrations
 Migrations/
