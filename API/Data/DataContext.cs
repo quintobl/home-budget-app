@@ -14,4 +14,6 @@ public class DataContext(DbContextOptions options) : DbContext(options)
     public DbSet<Credit> Credits { get; set; }
 
     public DbSet<Category> Categories { get; set; }
+
+    public DbSet<Description> Descriptions { get; set; }
 }

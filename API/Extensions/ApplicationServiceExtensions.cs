@@ -20,6 +20,7 @@ public static class ApplicationServiceExtensions
         services.AddScoped<ICreditRepository, CreditRepository>();
         services.AddScoped<IDebitRepository, DebitRepository>();
         services.AddScoped<ICategoryRepository, CategoryRepository>();
+        services.AddScoped<IDescriptionRepository, DescriptionRepository>();
 
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
