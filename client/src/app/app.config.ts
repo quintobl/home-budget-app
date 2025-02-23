@@ -17,6 +17,6 @@ export const appConfig: ApplicationConfig = {
     provideAnimations(),
     provideToastr({}),
     provideAnimationsAsync(),
-    ...provideNativeDateAdapter(),
+    ...provideNativeDateAdapter(), provideAnimationsAsync(),
   ],
 };

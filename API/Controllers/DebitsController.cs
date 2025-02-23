@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using API.DTOs;
 using API.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -22,4 +23,33 @@ public class DebitsController(IDebitRepository debitRepository) : BaseApiControl
         if (debit == null) return NotFound();
         return debit;
     }
+
+    [HttpPost("add")]
+    public async Task<ActionResult<DebitDto>> AddDebit([FromBody] DebitDto debitDto)
+    {
+        if (debitDto == null)
+        {
+            return BadRequest("Debit data is required.");
+        }
+        if (debitDto.DescriptionId == -1)
+        {
+            // if (string.IsNullOrEmpty(debitDto.DescriptionName))
+            // {
+            //     return BadRequest("Custom description is required when DescriptionId is -1.");
+            // }
+
+            // Generate a new DescriptionId
+            int newDescriptionId = await debitRepository.GetNextDescriptionIdAsync();
+            debitDto.DescriptionId = newDescriptionId;
+
+            // Save the new description to the database
+            await debitRepository.AddDescriptionAsync(debitDto.DescriptionName);
+        }
+
+        var createdDebit = await debitRepository.AddDebitAsync(debitDto);
+
+        return CreatedAtAction(nameof(GetDebit), new { id = createdDebit.Id }, createdDebit);
+    }
+
+
 }

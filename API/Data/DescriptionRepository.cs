@@ -7,48 +7,53 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Data
 {
-    public class DescriptionRepository : IDescriptionRepository
+    public class DescriptionRepository(DataContext context, IMapper mapper) : IDescriptionRepository
     {
-        // Todo: Change all repositories to have encapsulation like below with backing fields.
-        private readonly DataContext _context;
-        private readonly IMapper _mapper;
-
-        public DescriptionRepository(DataContext context, IMapper mapper)
-        {
-            _context = context;
-            _mapper = mapper;
-        }
-
         public async Task<IEnumerable<DescriptionDto>> GetDescriptionsAsync()
         {
-            return await _context.Descriptions
-                .ProjectTo<DescriptionDto>(_mapper.ConfigurationProvider)
+            return await context.Descriptions
+                .ProjectTo<DescriptionDto>(mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
         public async Task<DescriptionDto?> GetDescriptionByIdAsync(int id)
         {
-            return await _context.Descriptions
+            return await context.Descriptions
                 .Where(d => d.Id == id)
-                .ProjectTo<DescriptionDto>(_mapper.ConfigurationProvider)
+                .ProjectTo<DescriptionDto>(mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
         }
 
         public async Task<IEnumerable<DescriptionDto>> GetDescriptionsByCategoryAsync(int categoryId)
         {
-            return await _context.Descriptions
+            return await context.Descriptions
                 .Where(d => d.CategoryId == categoryId)
-                .ProjectTo<DescriptionDto>(_mapper.ConfigurationProvider)
+                .ProjectTo<DescriptionDto>(mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
         public async Task<IEnumerable<DescriptionDto>> GetDescriptionsByDateRangeAsync(DateTime startDate, DateTime endDate)
         {
-            return await _context.Descriptions
+            return await context.Descriptions
                 .Where(d => d.Debits.Any(debit => debit.Date >= startDate && debit.Date <= endDate) ||
                             d.Credits.Any(credit => credit.Date >= startDate && credit.Date <= endDate))
-                .ProjectTo<DescriptionDto>(_mapper.ConfigurationProvider)
+                .ProjectTo<DescriptionDto>(mapper.ConfigurationProvider)
                 .ToListAsync();
+        }
+
+        public Task<DescriptionDto?> AddDescriptionAsync(DescriptionDto descriptionDto)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<DescriptionDto?> DeleteDescriptionAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> SaveAllAsync()
+        {
+            throw new NotImplementedException();
         }
     }
 }

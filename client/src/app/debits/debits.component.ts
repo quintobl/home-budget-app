@@ -1,7 +1,4 @@
-import { Component } from '@angular/core';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
-import { MatDatepickerModule } from '@angular/material/datepicker';
+import { Component, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -9,70 +6,102 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { DebitService } from '../_services/debit.service';
 import { CommonModule } from '@angular/common';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 @Component({
   selector: 'app-debit',
   standalone: true,
   imports: [
+    CommonModule,
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
-    CommonModule,
     MatSelectModule,
     MatDatepickerModule,
   ],
   templateUrl: './debits.component.html',
   styleUrls: ['./debits.component.css'],
 })
-export class DebitsComponent {
+export class DebitsComponent implements OnInit {
   debitForm: FormGroup;
-  categories = [
-    { id: 1, name: 'Groceries' },
-    { id: 2, name: 'Utilities' },
-    { id: 3, name: 'Entertainment' },
-  ];
-  selectedCategory: number | null = null;
-  customCategory: string = ''; // Custom category input by the user
-  amount: number | null = null; // Amount entered by the user
-  date: string = ''; // Date selected by the user (in yyyy-mm-dd format)
+  categories: any[] = [];
+  accounts: any[] = [];
+  descriptions: { [key: number]: string[] } = {};
+  filteredDescriptions: string[] = [];
 
-  descriptionArray: string[] = [
-    'Rent Payment',
-    'Grocery Shopping',
-    'Electric Bill',
-    'Entertainment Expense',
-    'Dining Out',
-  ];
-
-  // Selected description from the dropdown
-  selectedDescription: string = '';
-
-  // Custom description input by the user
-  customDescription: string = '';
-
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private debitService: DebitService) {
     this.debitForm = this.fb.group({
-      category: ['', Validators.required],
-      description: ['', Validators.required],
+      account: ['', Validators.required],
+      category: [''],
+      customCategory: [''],
+      description: [''],
+      customDescription: [''],
       amount: ['', [Validators.required, Validators.min(0.01)]],
       date: ['', Validators.required],
-      account: ['', Validators.required],
     });
   }
 
-  onSubmit() {
-    // Get the category to submit (either selected or custom)
-    const categoryToSubmit = this.selectedCategory
-      ? this.selectedCategory
-      : this.customCategory;
-    const descriptionToSubmit =
-      this.selectedDescription || this.customDescription;
+  public ngOnInit(): void {
+    console.log(this.debitForm.valid, this.debitForm.value);
+    this.loadCategories();
+    this.loadDescriptions();
+    this.loadAccounts();
+  }
 
-    console.log('Submitting with category:', categoryToSubmit);
-    console.log('Submitting with description:', descriptionToSubmit);
-    console.log('Submitting with amount:', this.amount);
-    console.log('Submitting with date:', this.date);
-    // You can now send this data to the backend or handle it accordingly
+  public loadCategories(): void {
+    this.debitService.getCategories().subscribe((data) => {
+      this.categories = data;
+    });
+  }
+
+  public loadDescriptions(): void {
+    this.debitService.getDescriptions().subscribe((data) => {
+      this.descriptions = data;
+    });
+  }
+
+  public loadAccounts(): void {
+    this.debitService.getAccounts().subscribe((data) => {
+      this.accounts = data;
+    });
+  }
+
+  public onCategoryChange(event: any): void {
+    const selectedCategoryId = event.target.value;
+    this.filteredDescriptions = this.descriptions[selectedCategoryId] || [];
+  }
+
+  public onSubmit(): void {
+    if (this.debitForm.invalid) return;
+
+    debugger;
+
+    const debitData = this.debitForm.value;
+
+    debitData.CategoryName = debitData.customCategory || debitData.category;
+
+    debitData.DescriptionId = debitData.description;
+
+    if (debitData.customDescription) {
+      debitData.DescriptionId = -1;
+    }
+
+    debitData.date = new Date(debitData.date).toISOString();
+
+    console.log('Submitting debit:', JSON.stringify(debitData));
+
+    this.debitService.saveDebit(debitData).subscribe(
+      (response) => {
+        console.log('Debit saved:', response);
+      },
+      (error) => {
+        console.error('Error saving debit:', error);
+      }
+    );
   }
 }
