@@ -8,6 +8,6 @@ public class Category
     public string? Name { get; set; }
 
     // One-to-Many: A category can be assigned to multiple transactions
-    public List<Debit> Debits { get; set; } = [];
-    public List<Credit> Credits { get; set; } = [];
+    public List<Debit?> Debits { get; set; } = [];
+    public List<Credit?> Credits { get; set; } = [];
 }

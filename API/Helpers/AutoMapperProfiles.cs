@@ -23,7 +23,7 @@ public class AutoMapperProfiles : Profile
         CreateMap<DebitDto, Debit>();
 
         // Category Mappings
-        CreateMap<Category, CategoryDto>();
+        CreateMap<Category, CategoryDto>().ReverseMap();
 
         // Description Mappings
         CreateMap<Description, DescriptionDto>();

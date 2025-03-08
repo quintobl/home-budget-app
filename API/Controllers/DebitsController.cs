@@ -1,5 +1,3 @@
-using System.Diagnostics;
-using API.DTOs;
 using API.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,44 +10,68 @@ public class DebitsController(IDebitRepository debitRepository) : BaseApiControl
     [HttpGet]
     public async Task<ActionResult<IEnumerable<DebitDto>>> GetDebits()
     {
-        var debits = await debitRepository.GetDebitsAsync();
-        return Ok(debits);
+        try
+        {
+            var debits = await debitRepository.GetDebitsAsync();
+
+            if (debits == null || !debits.Any())
+            {
+                return NotFound("No debits found.");
+            }
+
+            return Ok(debits);
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error retrieving debits: {ex.Message}");
+
+            return StatusCode(500, "An unexpected error occurred while retrieving debits.");
+        }
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<DebitDto>> GetDebit(int id)
     {
-        var debit = await debitRepository.GetDebitByIdAsync(id);
-        if (debit == null) return NotFound();
-        return debit;
+        try
+        {
+            if (id <= 0)
+            {
+                return BadRequest("Invalid debit ID.");
+            }
+
+            var debit = await debitRepository.GetDebitByIdAsync(id);
+
+            if (debit == null)
+            {
+                return NotFound($"Debit with ID {id} not found.");
+            }
+
+            return Ok(debit);
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error retrieving debit ID {id}: {ex.Message}");
+
+            return StatusCode(500, "An unexpected error occurred while retrieving the debit.");
+        }
     }
 
     [HttpPost("add")]
     public async Task<ActionResult<DebitDto>> AddDebit([FromBody] DebitDto debitDto)
     {
-        if (debitDto == null)
+        try
         {
-            return BadRequest("Debit data is required.");
+            var createdDebit = await debitRepository.AddDebitAsync(debitDto);
+            return CreatedAtAction(nameof(GetDebit), new { id = createdDebit.Id }, createdDebit);
         }
-        if (debitDto.DescriptionId == -1)
+        catch (ArgumentException ex)
         {
-            // if (string.IsNullOrEmpty(debitDto.DescriptionName))
-            // {
-            //     return BadRequest("Custom description is required when DescriptionId is -1.");
-            // }
-
-            // Generate a new DescriptionId
-            int newDescriptionId = await debitRepository.GetNextDescriptionIdAsync();
-            debitDto.DescriptionId = newDescriptionId;
-
-            // Save the new description to the database
-            await debitRepository.AddDescriptionAsync(debitDto.DescriptionName);
+            return BadRequest(ex.Message);
         }
-
-        var createdDebit = await debitRepository.AddDebitAsync(debitDto);
-
-        return CreatedAtAction(nameof(GetDebit), new { id = createdDebit.Id }, createdDebit);
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error adding debit: {ex.Message}");
+            return StatusCode(500, "An error occurred while adding the debit.");
+        }
     }
-
-
 }

@@ -7,8 +7,8 @@ namespace API.Interfaces
     {
         Task<IEnumerable<CategoryDto>> GetCategoriesAsync();
         Task<CategoryDto?> GetCategoryByIdAsync(int id);
-        Task<CategoryDto?> AddCategoryAsync(CategoryDto categoryDto);
+        Task<string> GetCategoryNameAsync(int id);
+        Task<CategoryDto?> AddCategoryAsync(string categoryName);
         Task<CategoryDto?> DeleteCategoryAsync(int id);
-        Task<bool> SaveAllAsync();
     }
 }

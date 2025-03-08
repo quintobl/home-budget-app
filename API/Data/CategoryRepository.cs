@@ -1,5 +1,4 @@
 using API.DTOs;
-using API.Entities;
 using API.Interfaces;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
@@ -12,50 +11,143 @@ public class CategoryRepository(DataContext context, IMapper mapper) : ICategory
 
     public async Task<IEnumerable<CategoryDto>> GetCategoriesAsync()
     {
-        return await context.Categories
-            .ProjectTo<CategoryDto>(mapper.ConfigurationProvider)
-            .ToListAsync();
+        try
+        {
+            return await context.Categories
+                .ProjectTo<CategoryDto>(mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error retrieving categories: {ex.Message}");
+            throw new Exception("An error occurred while retrieving categories.", ex);
+        }
     }
 
     public async Task<CategoryDto?> GetCategoryByIdAsync(int id)
     {
-        return await context.Categories
-            .Where(a => a.Id == id)
-            .ProjectTo<CategoryDto>(mapper.ConfigurationProvider)
-            .SingleOrDefaultAsync();
+        try
+        {
+            return await context.Categories
+                .Where(a => a.Id == id)
+                .ProjectTo<CategoryDto>(mapper.ConfigurationProvider)
+                .SingleOrDefaultAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error retrieving category with ID {id}: {ex.Message}");
+            throw new Exception($"An error occurred while retrieving category with ID {id}.", ex);
+        }
     }
 
-    public async Task<CategoryDto?> AddCategoryAsync(CategoryDto categoryDto)
+    public async Task<string> GetCategoryNameAsync(int categoryId)
     {
-        var category = mapper.Map<Category>(categoryDto);
+        try
+        {
+            var categoryName = await context.Categories
+                .Where(c => c.Id == categoryId)
+                .Select(c => c.Name)
+                .FirstOrDefaultAsync();
 
-        await context.Categories.AddAsync(category);
-        var success = await context.SaveChangesAsync() > 0;
+            if (string.IsNullOrEmpty(categoryName))
+            {
+                throw new ArgumentException($"Invalid Category ID: {categoryId}.");
+            }
 
-        if (!success) return null;
+            return categoryName;
+        }
+        catch (ArgumentException ex)
+        {
+            Console.WriteLine($"Validation error: {ex.Message}");
+            throw;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Database error while retrieving category name for ID {categoryId}: {ex.Message}");
+            throw new Exception($"An error occurred while retrieving the category name for ID {categoryId}.", ex);
+        }
+    }
 
-        return await context.Categories
-            .Where(c => c.Id == category.Id)
-            .ProjectTo<CategoryDto>(mapper.ConfigurationProvider)
-            .SingleOrDefaultAsync();
+    public async Task<CategoryDto?> AddCategoryAsync(string categoryName)
+    {
+        if (string.IsNullOrWhiteSpace(categoryName))
+        {
+            throw new ArgumentException("Category name cannot be empty.", nameof(categoryName));
+        }
+
+        var newCategory = new Category
+        {
+            Name = categoryName
+        };
+
+        try
+        {
+            await context.Categories.AddAsync(newCategory);
+            await context.SaveChangesAsync();
+
+            return new CategoryDto
+            {
+                Id = newCategory.Id,
+                Name = newCategory.Name
+            };
+        }
+        catch (DbUpdateException ex)
+        {
+            Console.Error.WriteLine($"Database update failed: {ex.Message}");
+
+            throw new InvalidOperationException("An error occurred while saving the category. Please try again later.", ex);
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Unexpected error: {ex.Message}");
+
+            throw new ApplicationException("An unexpected error occurred while adding the category.", ex);
+        }
     }
 
     public async Task<CategoryDto?> DeleteCategoryAsync(int id)
     {
-        var category = await context.Categories.FindAsync(id);
+        try
+        {
+            if (id <= 0)
+            {
+                throw new ArgumentException("Invalid category ID.", nameof(id));
+            }
 
-        if (category == null) return null;
+            var category = await context.Categories.FindAsync(id);
+            if (category == null)
+            {
+                return null;
+            }
 
-        context.Categories.Remove(category);
-        var success = await context.SaveChangesAsync() > 0;
+            context.Categories.Remove(category);
+            var success = await context.SaveChangesAsync() > 0;
 
-        if (!success) return null;
+            if (!success)
+            {
+                throw new InvalidOperationException("Failed to delete the category.");
+            }
 
-        return mapper.Map<CategoryDto>(category);
-    }
-    public async Task<bool> SaveAllAsync()
-    {
-        return await context.SaveChangesAsync() > 0;
+            return mapper.Map<CategoryDto>(category);
+        }
+        catch (ArgumentException ex)
+        {
+            Console.Error.WriteLine($"Validation Error: {ex.Message}");
+
+            return null;
+        }
+        catch (InvalidOperationException ex)
+        {
+            Console.Error.WriteLine($"Database Error: {ex.Message}");
+
+            return null;
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Unexpected error while deleting category ID {id}: {ex.Message}");
+
+            return null;
+        }
     }
 
 }
