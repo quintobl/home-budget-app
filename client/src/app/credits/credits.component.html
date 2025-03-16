@@ -1,1 +1,112 @@
-<p>credits works!</p>
+<div class="container mt-4">
+  <h3>Enter Credit</h3>
+  <form [formGroup]="creditForm" (ngSubmit)="onSubmit()">
+    <!-- Account Selection -->
+    <div class="mb-3">
+      <label for="account" class="form-label">Account</label>
+      <select class="form-select w-25" id="account" formControlName="accountId">
+        <option *ngFor="let account of accounts" [value]="account.id">
+          {{ account.name }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Category Selection -->
+    <div class="mb-3">
+      <label for="category" class="form-label">Category</label>
+      <select
+        class="form-select w-25"
+        id="category"
+        formControlName="categoryId"
+        [disabled]="creditForm.controls['customCategory'].value"
+        (change)="onCategoryChange($event)"
+      >
+        <option *ngFor="let category of categories" [value]="category.id">
+          {{ category.name }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Custom Category -->
+    <div class="mb-3">
+      <label for="customCategory" class="form-label"
+        >Or Enter Custom Category</label
+      >
+      <input
+        type="text"
+        class="form-control w-25"
+        id="customCategory"
+        formControlName="customCategory"
+        placeholder="Enter category"
+        (input)="creditForm.controls['categoryId'].reset()"
+      />
+    </div>
+
+    <!-- Description Selection -->
+    <div class="mb-3">
+      <label for="description" class="form-label">Description</label>
+      <select
+        class="form-select w-25"
+        id="description"
+        formControlName="descriptionId"
+        (change)="onDescriptionChange($event)"
+      >
+        <option
+          *ngFor="let description of filteredDescriptions"
+          [value]="description.id"
+        >
+          {{ description.name }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Custom Description Input -->
+    <div class="mb-3">
+      <label for="customDescription" class="form-label"
+        >Or Enter Custom Description</label
+      >
+      <input
+        type="text"
+        class="form-control w-25"
+        id="customDescription"
+        formControlName="customDescription"
+        placeholder="Enter description"
+      />
+    </div>
+
+    <!-- Amount Input -->
+    <div class="mb-3">
+      <label for="amount" class="form-label">Amount</label>
+      <input
+        type="number"
+        class="form-control w-25"
+        id="amount"
+        formControlName="amount"
+        placeholder="Enter amount"
+        required
+      />
+    </div>
+
+    <!-- Date Input -->
+    <div class="mb-3">
+      <label for="date" class="form-label">Date</label>
+      <input
+        type="date"
+        class="form-control w-25"
+        id="date"
+        formControlName="date"
+        required
+      />
+    </div>
+
+    <div class="mb-3">
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="creditForm.invalid"
+      >
+        Submit
+      </button>
+    </div>
+  </form>
+</div>

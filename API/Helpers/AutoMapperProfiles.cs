@@ -15,6 +15,7 @@ public class AutoMapperProfiles : Profile
         CreateMap<Credit, CreditDto>()
             .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
             .ForMember(dest => dest.DescriptionName, opt => opt.MapFrom(src => src.Description.Name)); // Mapping Description for Credit
+        CreateMap<CreditDto, Credit>();
 
         // Debit Mappings
         CreateMap<Debit, DebitDto>()

@@ -11,16 +11,69 @@ public class CreditsController(ICreditRepository creditRepository) : BaseApiCont
     [HttpGet]
     public async Task<ActionResult<IEnumerable<CreditDto>>> GetCredits()
     {
-        var credits = await creditRepository.GetCreditsAsync();
-        return Ok(credits);
+        try
+        {
+            var credits = await creditRepository.GetCreditsAsync();
+
+            if (credits == null || !credits.Any())
+            {
+                return NotFound("No credits found.");
+            }
+
+            return Ok(credits);
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error retrieving credits: {ex.Message}");
+
+            return StatusCode(500, "An unexpected error occurred while retrieving credits.");
+        }
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<CreditDto>> GetCredit(int id)
     {
-        var credit = await creditRepository.GetCreditByIdAsync(id);
-        if (credit == null) return NotFound();
-        return credit;
+        try
+        {
+            if (id <= 0)
+            {
+                return BadRequest("Invalid credit ID.");
+            }
+
+            var credit = await creditRepository.GetCreditByIdAsync(id);
+
+            if (credit == null)
+            {
+                return NotFound($"Credit with ID {id} not found.");
+            }
+
+            return Ok(credit);
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error retrieving credit ID {id}: {ex.Message}");
+
+            return StatusCode(500, "An unexpected error occurred while retrieving the credit.");
+        }
+    }
+
+    [HttpPost("add")]
+    public async Task<ActionResult<CreditDto>> AddCredit([FromBody] CreditDto creditDto)
+    {
+        try
+        {
+            var createdCredit = await creditRepository.AddCreditAsync(creditDto);
+            return CreatedAtAction(nameof(GetCredit), new { id = createdCredit.Id }, createdCredit);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error adding credit: {ex.Message}");
+            return StatusCode(500, "An error occurred while adding the credit.");
+        }
     }
 
     [HttpGet("by-date")]
